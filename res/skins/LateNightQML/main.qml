@@ -16,6 +16,15 @@ ApplicationWindow {
     visible: true
     width: 1792
 
+    function updateVisibility() {
+        if (!Mixxx.Core.ready) {
+            return;
+        }
+        root.visibility = Mixxx.Config.configStartInFullscreenKey
+                ? Window.FullScreen
+                : Window.Windowed;
+    }
+
     function updateProgress() {
         if (!Mixxx.Core.ready) {
             displayedProgress = Math.max(displayedProgress,
@@ -44,6 +53,7 @@ ApplicationWindow {
         }
         function onReadyChanged() {
             root.updateProgress();
+            root.updateVisibility();
         }
     }
 
@@ -81,5 +91,8 @@ ApplicationWindow {
         }
     }
 
-    Component.onCompleted: updateProgress()
+    Component.onCompleted: {
+        updateProgress();
+        updateVisibility();
+    }
 }
