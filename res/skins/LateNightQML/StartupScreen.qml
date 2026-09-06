@@ -24,7 +24,7 @@ Rectangle {
 
     Column {
         anchors.centerIn: parent
-        spacing: 2
+        spacing: 6
 
         Image {
             height: root.logoHeight
