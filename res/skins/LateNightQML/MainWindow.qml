@@ -2,6 +2,7 @@ import "../../qml" as Skin
 import "LateNightTheme"
 import "Deck" as LateNightDeck
 import "Effects" as LateNightEffects
+import "MicAux" as LateNightMicAux
 import "Mixer" as LateNightMixer
 import "Samplers" as LateNightSamplers
 import "Toolbar" as LateNightToolbar
@@ -26,6 +27,7 @@ Item {
     readonly property int numSamplers: 64
     readonly property bool show4decks: toolbar.show4decks
     property alias showEffects: toolbar.showEffects
+    property alias showMicAux: toolbar.showMicAux
     readonly property bool showMaximizedDecks: toolbar.showMaximizedDecks
     readonly property bool showMixer: toolbar.showMixer
     property alias showSamplers: toolbar.showSamplers
@@ -401,7 +403,7 @@ Item {
 
                 readonly property real basePaneHeight: Math.max(deckRowsHeight, mixer.visible ? mixer.implicitHeight : 0)
                 readonly property real deckRowsHeight: root.show4decks ? visibleDeckHeight * 2 : visibleDeckHeight
-                readonly property real requiredPaneHeight: basePaneHeight + effectsSection.height + samplersSection.height
+                readonly property real requiredPaneHeight: basePaneHeight + effectsSection.height + samplersSection.height + micAuxSection.height
                 readonly property real visibleDeckHeight: root.maximizeLibrary ? (root.showMaximizedDecks ? root.minimizedDeckHeight : 0) : root.fullDeckHeight
 
                 SplitView.fillHeight: library.active
@@ -735,6 +737,37 @@ Item {
                         anchors.top: parent.top
                     }
                 }
+                Item {
+                    id: micAuxSection
+
+                    clip: true
+                    height: root.showMicAux && !root.maximizeLibrary ? micAuxRack.implicitHeight : 0
+                    opacity: root.showMicAux && !root.maximizeLibrary ? 1 : 0
+                    visible: height > 0
+                    width: parent.width
+                    y: samplersSection.y + samplersSection.height
+                    z: 2
+
+                    Behavior on height {
+                        NumberAnimation {
+                            duration: 150
+                            easing.type: Easing.OutCubic
+                        }
+                    }
+                    Behavior on opacity {
+                        NumberAnimation {
+                            duration: 120
+                        }
+                    }
+
+                    LateNightMicAux.MicAuxRack {
+                        id: micAuxRack
+
+                        anchors.left: parent.left
+                        anchors.right: parent.right
+                        anchors.top: parent.top
+                    }
+                }
                 Loader {
                     id: library
 
@@ -775,7 +808,7 @@ Item {
 
                     anchors {
                         bottom: parent.bottom
-                        top: samplersSection.bottom
+                        top: micAuxSection.bottom
                     }
                 }
             }
